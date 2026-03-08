@@ -106,6 +106,11 @@ if __name__ == "__main__":
     logits = torch.load(args.file)
     if logits.dim() != 2:
         raise SystemExit(f"Expected 2D tensor (batch, experts), got shape {logits.shape}")
+    # Triton kernels require CUDA tensors
+    if logits.device.type != "cuda":
+        if not torch.cuda.is_available():
+            raise SystemExit("Triton requires CUDA; no GPU available.")
+        logits = logits.to("cuda")
     k = min(args.k, logits.shape[1])
     device = logits.device
 

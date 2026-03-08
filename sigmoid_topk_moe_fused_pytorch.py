@@ -42,6 +42,9 @@ if __name__ == "__main__":
     logits = torch.load(args.file)
     if logits.dim() != 2:
         raise SystemExit(f"Expected 2D tensor (batch, experts), got shape {logits.shape}")
+    # Run on GPU when available (for benchmarking/NCU)
+    if logits.device.type != "cuda" and torch.cuda.is_available():
+        logits = logits.to("cuda")
     k = min(args.k, logits.shape[1])
     device = logits.device
 
