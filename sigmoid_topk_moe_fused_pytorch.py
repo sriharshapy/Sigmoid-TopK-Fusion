@@ -31,9 +31,9 @@ def sigmoid_topk(
     return topk_vals, topk_idx.to(torch.int32)
 
 
-@torch.compile(mode="reduce-overhead", fullgraph=False)
+@torch.compile(mode="max-autotune", fullgraph=True)
 def _sigmoid_topk_compiled(logits: torch.Tensor, k: int) -> tuple[torch.Tensor, torch.Tensor]:
-    """Compiled path: single call so inductor can fuse sigmoid + topk + cast."""
+    """Compiled path: single call so inductor can fuse sigmoid + topk + cast (max kernel speed, longer compile)."""
     probs = logits.sigmoid()
     topk_vals, topk_idx = probs.topk(k, dim=-1)
     return topk_vals, topk_idx.to(torch.int32)
@@ -48,8 +48,8 @@ if __name__ == "__main__":
     p.add_argument("-n", "--iters", type=int, default=100, help="number of timed iterations")
     p.add_argument("--no-warmup", action="store_true", help="skip warmup (for NCU profiling)")
     p.add_argument("--no-print", action="store_true", help="do not print topk_vals/topk_idx (e.g. for NCU)")
-    p.add_argument("--compile", nargs="?", const="reduce-overhead", default=None,
-                   help="use torch.compile for better fusion (default: reduce-overhead; or max-autotune)")
+    p.add_argument("--compile", nargs="?", const="max-autotune", default=None,
+                   help="use torch.compile for max kernel speed (default: max-autotune; or reduce-overhead for faster compile)")
     args = p.parse_args()
 
     logits = torch.load(args.file)
@@ -62,11 +62,11 @@ if __name__ == "__main__":
     device = logits.device
 
     if args.compile:
-        mode = args.compile  # "reduce-overhead" (default) or "max-autotune"
-        if mode == "max-autotune":
-            fn = torch.compile(sigmoid_topk, mode="max-autotune", fullgraph=False)
+        mode = args.compile  # "max-autotune" (default) or "reduce-overhead"
+        if mode == "reduce-overhead":
+            fn = torch.compile(sigmoid_topk, mode="reduce-overhead", fullgraph=False)
         else:
-            fn = _sigmoid_topk_compiled  # already @torch.compile(mode="reduce-overhead")
+            fn = _sigmoid_topk_compiled  # already @torch.compile(mode="max-autotune")
         if not args.no_print:
             print(f"Using torch.compile(mode={mode!r})")
     else:
