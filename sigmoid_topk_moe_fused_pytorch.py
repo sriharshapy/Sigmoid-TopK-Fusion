@@ -37,6 +37,7 @@ if __name__ == "__main__":
     p.add_argument("-k", type=int, default=2, help="number of top experts")
     p.add_argument("-n", "--iters", type=int, default=100, help="number of timed iterations")
     p.add_argument("--no-warmup", action="store_true", help="skip warmup (for NCU profiling)")
+    p.add_argument("--no-print", action="store_true", help="do not print topk_vals/topk_idx (e.g. for NCU)")
     args = p.parse_args()
 
     logits = torch.load(args.file)
@@ -63,9 +64,9 @@ if __name__ == "__main__":
             torch.cuda.synchronize()
     end = time.perf_counter()
     avg_ms = (end - start) / args.iters * 1000
-    print(f"Average over {args.iters} runs: {avg_ms:.4f} ms")
-
-    print("topk_vals:")
-    print(topk_vals)
-    print("topk_idx:")
-    print(topk_idx)
+    if not args.no_print:
+        print(f"Average over {args.iters} runs: {avg_ms:.4f} ms")
+        print("topk_vals:")
+        print(topk_vals)
+        print("topk_idx:")
+        print(topk_idx)
