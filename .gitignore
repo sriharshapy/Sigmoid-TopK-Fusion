@@ -1,0 +1,37 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Python tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Local runtime/generated files
+tensor.pt
+*.log
+
+# Nsight profiler outputs
+*.ncu-rep
+*.nsys-rep
+report_*.sqlite
+report_*.qdrep
+report_*_cuda_gpu_kern_sum.csv
+report_*_cuda_api_sum.csv
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
