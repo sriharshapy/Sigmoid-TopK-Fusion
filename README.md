@@ -57,23 +57,23 @@ The notebook `sigmoid_topk_benchmark_ncu.ipynb` profiles both implementations wi
 
 ### Nsight Compute (`ncu`)
 Kernel-level hardware counters:
-- `gpu__time_duration.sum`
-- `dram__throughput.avg.pct_of_peak_sustained_elapsed`
-- `sm__warps_active.avg.pct_of_peak_sustained_active`
-- `smsp__thread_inst_executed_per_inst_executed.ratio`
-- `l1tex__throughput.avg.pct_of_peak_sustained_elapsed`
-- `l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_ld.sum`
-- `lts__t_sectors.avg.pct_of_peak_sustained_elapsed`
-- `l1tex__t_sector_hit_rate.pct`
-- `lts__t_sectors_srcunit_tex_op_read.sum`
-- `smsp__sass_average_data_bytes_per_sector_mem_global_op_ld.pct`
-- `dram__bytes_read.sum`
-- `dram__bytes_write.sum`
+- `gpu__time_duration.sum` (time, usually shown as `μs` in this README)
+- `dram__throughput.avg.pct_of_peak_sustained_elapsed` (percentage of peak, `%`)
+- `sm__warps_active.avg.pct_of_peak_sustained_active` (percentage of peak, `%`)
+- `smsp__thread_inst_executed_per_inst_executed.ratio` (unitless ratio)
+- `l1tex__throughput.avg.pct_of_peak_sustained_elapsed` (percentage of peak, `%`)
+- `l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_ld.sum` (event count)
+- `lts__t_sectors.avg.pct_of_peak_sustained_elapsed` (percentage of peak, `%`)
+- `l1tex__t_sector_hit_rate.pct` (hit rate, `%`)
+- `lts__t_sectors_srcunit_tex_op_read.sum` (sector count)
+- `smsp__sass_average_data_bytes_per_sector_mem_global_op_ld.pct` (percentage, `%`)
+- `dram__bytes_read.sum` (byte-family memory counter)
+- `dram__bytes_write.sum` (byte-family memory counter)
 
 ### Nsight Systems (`nsys`)
 System-level execution summaries:
-- `cuda_gpu_kern_sum` (GPU kernel timeline summary)
-- `cuda_api_sum` (CUDA API call overhead summary)
+- `cuda_gpu_kern_sum` (GPU kernel timeline summary; time in `ns`, shown as `μs` in tables)
+- `cuda_api_sum` (CUDA API call overhead summary; time in `ns`, shown as `ms` in tables)
 
 ---
 
@@ -83,6 +83,14 @@ Benchmark environment used for the results below:
 - **Platform:** Google Colab
 - **GPU:** NVIDIA Tesla T4
 - **GPU Compute Capability:** **7.5** (as reported in profiling exports)
+
+### Metric Unit Legend
+
+- **Time:** `ns` (raw NSYS CSV), presented as `μs` or `ms` in this README.
+- **Percentage utilization/hit-rate:** `%`.
+- **Counts:** events/instances/sectors (dimensionless count family).
+- **Ratios:** unitless.
+- **Byte-family counters:** memory-volume counters from NCU (used primarily for relative comparison across implementations).
 
 ### TL;DR (Executive View)
 
@@ -98,7 +106,7 @@ Source: `data/nsys_merged.csv`
 
 | Metric | Triton | PyTorch | Delta (PyTorch - Triton) | Triton Advantage |
 | --- | ---: | ---: | ---: | ---: |
-| GPU kernel time (`cuda_gpu_kern_sum`, us) | 438.039 | 1357.220 | 919.181 us | **3.10x faster** |
+| GPU kernel time (`cuda_gpu_kern_sum`, μs) | 438.039 | 1357.220 | 919.181 μs | **3.10x faster** |
 | Kernel instances (`cuda_gpu_kern_sum`) | 1 | 4 | 3 fewer kernels | **4x fewer launches** |
 | CUDA API time (`cuda_api_sum`, ms) | 2.852 | 36.263 | 33.411 ms | **92.14% lower** |
 
@@ -107,10 +115,10 @@ Source: `data/nsys_merged.csv`
 Source: `data/ncu_merged.csv`  
 Note: values below are aggregate counters across captured kernels.
 
-| Metric | Triton | PyTorch | Delta (PyTorch - Triton) | Triton Advantage |
+| Metric (unit family) | Triton | PyTorch | Delta (PyTorch - Triton) | Triton Advantage |
 | --- | ---: | ---: | ---: | ---: |
-| DRAM read (`dram__bytes_read.sum`) | 12.792128 | 23.618144 | 10.826016 | **1.85x lower** |
-| DRAM write (`dram__bytes_write.sum`) | 1.610560 | 9.994432 | 8.383872 | **6.21x lower** (`83.89%` reduction) |
+| DRAM read (`dram__bytes_read.sum`, byte-family counter) | 12.792128 | 23.618144 | 10.826016 | **1.85x lower** |
+| DRAM write (`dram__bytes_write.sum`, byte-family counter) | 1.610560 | 9.994432 | 8.383872 | **6.21x lower** (`83.89%` reduction) |
 
 ### Extra comparison context
 
@@ -123,7 +131,7 @@ Note: values below are aggregate counters across captured kernels.
 
 Source: `data/nsys_merged.csv`
 
-| Implementation | Kernel | Time (us) | Share |
+| Implementation | Kernel | Time (μs) | Share |
 | --- | --- | ---: | ---: |
 | Triton | `_sigmoid_topk_kernel` | 438.039 | 100.00% |
 | PyTorch | `sbtopk::gatherTopK` | 1075.338 | 79.23% |
