@@ -1,0 +1,21 @@
+implementation,report,Time (%),Total Time (ns),Instances,Avg (ns),Med (ns),Min (ns),Max (ns),StdDev (ns),Name
+triton,cuda_gpu_kern_sum,100.0,438039,1,438039.0,438039.0,438039,438039,0.0,_sigmoid_topk_kernel
+triton,cuda_api_sum,68.6,1957257,1,1957257.0,1957257.0,1957257,1957257,0.0,cudaMemcpyAsync
+triton,cuda_api_sum,14.0,400265,2,200132.5,200132.5,154038,246227,65187.5,cudaMalloc
+triton,cuda_api_sum,9.8,278728,1,278728.0,278728.0,278728,278728,0.0,cudaDeviceSynchronize
+triton,cuda_api_sum,3.0,86042,1,86042.0,86042.0,86042,86042,0.0,cuModuleLoadData
+triton,cuda_api_sum,2.9,82813,1,82813.0,82813.0,82813,82813,0.0,cudaStreamSynchronize
+triton,cuda_api_sum,1.2,34324,1,34324.0,34324.0,34324,34324,0.0,cuLaunchKernelEx
+triton,cuda_api_sum,0.4,11479,2,5739.5,5739.5,2649,8830,4370.6,cudaStreamIsCapturing_v10000
+triton,cuda_api_sum,0.0,706,1,706.0,706.0,706,706,0.0,cuModuleGetLoadingMode
+pytorch,cuda_gpu_kern_sum,79.2,1075338,1,1075338.0,1075338.0,1075338,1075338,0.0,"void at::native::sbtopk::gatherTopK<float, unsigned int, (int)2, (bool)0>(at::cuda::detail::TensorInfo<const T1, T2>, T2, T2, bool, T2, T2, at::cuda::detail::TensorInfo<T1, T2>, T2, at::cuda::detail::TensorInfo<long, T2>, T2, T1 *)"
+pytorch,cuda_gpu_kern_sum,15.9,215387,1,215387.0,215387.0,215387,215387,0.0,"void at::native::bitonicSortKVInPlace<(int)2, (int)-1, (int)16, (int)16, float, long, at::native::GTOp<float, (bool)1>, unsigned int>(at::cuda::detail::TensorInfo<T5, T8>, T8, T8, T8, at::cuda::detail::TensorInfo<T6, T8>, T8, T7)"
+pytorch,cuda_gpu_kern_sum,4.5,60735,1,60735.0,60735.0,60735,60735,0.0,"void at::native::vectorized_elementwise_kernel<(int)4, at::native::sigmoid_kernel_cuda(at::TensorIteratorBase &)::[lambda() (instance 2)]::operator ()() const::[lambda() (instance 2)]::operator ()() const::[lambda(float) (instance 1)], std::array<char *, (unsigned long)2>>(int, T2, T3)"
+pytorch,cuda_gpu_kern_sum,0.4,5760,1,5760.0,5760.0,5760,5760,0.0,"void at::native::unrolled_elementwise_kernel<at::native::direct_copy_kernel_cuda(at::TensorIteratorBase &)::[lambda() (instance 3)]::operator ()() const::[lambda() (instance 3)]::operator ()() const::[lambda(int) (instance 1)], std::array<char *, (unsigned long)2>, (int)4, TrivialOffsetCalculator<(int)1, unsigned int>, TrivialOffsetCalculator<(int)1, unsigned int>, at::native::memory::LoadWithCast<(int)1>, at::native::memory::StoreWithCast<(int)1>>(int, T1, T2, T4, T5, T6, T7)"
+pytorch,cuda_api_sum,93.4,33865664,4,8466416.0,10632949.5,63806,12535959,5726495.7,cudaLaunchKernel
+pytorch,cuda_api_sum,5.3,1905490,1,1905490.0,1905490.0,1905490,1905490,0.0,cudaMemcpyAsync
+pytorch,cuda_api_sum,1.1,386258,2,193129.0,193129.0,154660,231598,54403.4,cudaMalloc
+pytorch,cuda_api_sum,0.2,82956,1,82956.0,82956.0,82956,82956,0.0,cudaStreamSynchronize
+pytorch,cuda_api_sum,0.0,11947,2,5973.5,5973.5,2754,9193,4553.1,cudaStreamIsCapturing_v10000
+pytorch,cuda_api_sum,0.0,9333,1,9333.0,9333.0,9333,9333,0.0,cudaDeviceSynchronize
+pytorch,cuda_api_sum,0.0,982,1,982.0,982.0,982,982,0.0,cuModuleGetLoadingMode
